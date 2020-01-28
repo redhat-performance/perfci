@@ -1,0 +1,56 @@
+{
+    "nodes": [
+	{
+            "arch": "x86_64",
+            "cpu": "2",
+            "disk": "20",
+            "mac": [
+                "D0:94:66:44:A1:87"
+            ],
+            "memory": "1024",
+            "pm_addr": "ospperf2-drac.mgmt.mobius.lab.eng.rdu2.redhat.com",
+            "pm_password": "calvin",
+            "pm_type": "pxe_ipmitool",
+            "pm_user": "root"
+        },
+        {
+            "arch": "x86_64",
+            "cpu": "2",
+            "disk": "20",
+            "mac": [
+                "D0:94:66:44:A4:0F"
+            ],
+            "memory": "1024",
+            "pm_addr": "ospperf3-drac.mgmt.mobius.lab.eng.rdu2.redhat.com",
+            "pm_password": "calvin",
+            "pm_type": "pxe_ipmitool",
+            "pm_user": "root"
+        },
+        {
+            "arch": "x86_64",
+            "cpu": "2",
+            "disk": "20",
+            "mac": [
+                "D0:94:66:43:67:AA"
+            ],
+            "memory": "1024",
+            "pm_addr": "ospperf4-drac.mgmt.mobius.lab.eng.rdu2.redhat.com",
+            "pm_password": "calvin",
+            "pm_type": "pxe_ipmitool",
+            "pm_user": "root"
+        },
+	{
+            "arch": "x86_64",
+            "cpu": "2",
+            "disk": "20",
+            "mac": [
+                "D0:94:66:44:A1:0E"
+            ],
+            "memory": "1024",
+            "pm_addr": "ospperf5-drac.mgmt.mobius.lab.eng.rdu2.redhat.com",
+            "pm_password": "calvin",
+            "pm_type": "pxe_ipmitool",
+            "pm_user": "root"
+        }
+    ]
+}
