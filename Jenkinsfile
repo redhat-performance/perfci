@@ -3,7 +3,7 @@ pipeline {
     stages {
         stage('setup jetpack') {
             steps {
-                sh 'git clone https://github.com/masco/perfci.git' 
+                sh 'git clone https://github.com/redhat-performance/jetpack.git' 
             }
         }
 
