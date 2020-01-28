@@ -12,9 +12,7 @@ pipeline {
 
         stage('deploy osp using jetpack') {
             steps {
-                echo 'deploy goes here'
-		sh 'cd jetpack'
-	        sh 'ls -l'
+                sh 'cd jetpack && ansible-playbook -vvv main.yml 2>&1 | tee log'
             }
         }
     }
