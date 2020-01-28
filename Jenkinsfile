@@ -6,7 +6,11 @@ pipeline {
                 sh 'git clone https://github.com/masco/perfci.git' 
             }
         }
+
         stage('deploy osp using jetpack') {
+            steps {
+                echo 'deploy goes here'
+            }
         }
     }
 }
