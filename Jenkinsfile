@@ -18,11 +18,15 @@ node('perfci') {
 
     stage('setup jetpack') {
         echo 'setup jetpack'
+        sh 'rm -rf jetpack'
+        sh 'git clone https://github.com/redhat-performance/jetpack.git'
+        sh 'cp instackenv.json ~/.'
+        sh 'cp osp13_vars.yml jetpack/group_vars/all.yml'
     }
 
     stage('deploy osp using jetpack') {
 	echo 'deploy osp'
-	sh 'hostname'
+	sh 'cd jetpack && ansible-playbook -vvv main.yml 2>&1 | tee log'
     }
 
     stage('setup browbeat') {
@@ -31,6 +35,7 @@ node('perfci') {
 	sh 'echo "graphite_prefix: ${graphite_prefix}" >> browbeat_vars.yml'
         sh 'echo "grafana_host: ${grafana_host}" >> browbeat_vars.yml'
         sh 'echo "dns_server: ${dns_server}" >> browbeat_vars.yml'
+        sh 'echo "collectd_container: false" >> browbeat_vars.yml'
 	//sh "dns=`cat /etc/resolv.conf | grep nameserver | head -n1 | cut -d ' ' -f2` && echo 'dns_server: $dns' >> browbeat_vars.yml"
         //sh 'echo "dns_server: ${dns}" >> browbeat_vars.yml'
     withCredentials([sshUserPrivateKey(credentialsId: 'privkey', keyFileVariable: 'keyfile', usernameVariable: 'username')]) {
@@ -42,29 +47,3 @@ node('perfci') {
     }
     }
 }
-/*pipeline {
-    agent { label 'perfci' }
-    stages {
-        stage('setup jetpack') {
-            steps {
-                echo 'setup jetpack'
-                //sh 'rm -rf jetpack'
-                //sh 'git clone https://github.com/redhat-performance/jetpack.git' 
-	        //sh 'cp instackenv.json ~/.'
-                //sh 'cp osp13_vars.yml jetpack/group_vars/all.yml'
-            }
-        }
-
-        stage('deploy osp using jetpack') {
-            steps {
-                echo 'deploy osp'
-                //sh 'cd jetpack && ansible-playbook -vvv main.yml 2>&1 | tee log'
-            }
-        }
-        stage('setup browbeat') {
-            steps {
-                echo 'setup browbeat'
-            }
-        }
-    }
-}*/
