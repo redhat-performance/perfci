@@ -18,15 +18,15 @@ node('perfci') {
 
     stage('setup jetpack') {
         echo 'setup jetpack'
-        sh 'rm -rf jetpack'
+        /*sh 'rm -rf jetpack'
         sh 'git clone https://github.com/redhat-performance/jetpack.git'
         sh 'cp instackenv.json ~/.'
-        sh 'cp osp13_vars.yml jetpack/group_vars/all.yml'
+        sh 'cp osp13_vars.yml jetpack/group_vars/all.yml'*/
     }
 
     stage('deploy osp using jetpack') {
 	echo 'deploy osp'
-	sh 'cd jetpack && ansible-playbook -vvv main.yml 2>&1 | tee log'
+	//sh 'cd jetpack && ansible-playbook -vvv main.yml 2>&1 | tee log'
     }
 
     stage('setup browbeat') {
@@ -41,7 +41,7 @@ node('perfci') {
     withCredentials([sshUserPrivateKey(credentialsId: 'privkey', keyFileVariable: 'keyfile', usernameVariable: 'username')]) {
         remote.user = username
         remote.identityFile = keyfile
-        sshPut remote: remote, from: 'browbeat_vars.yml', into: '/home/stack/browbeat/ansible/install/group_vars/all.yml', override:true
+        sshPut remote: remote, from: 'browbeat_vars.yml', into: '/home/stack/browbeat/ansible/install/group_vars/all.yml'
 	sshCommand remote: remote, command: 'cd /home/stack/browbeat/ansible && ansible-playbook -i hosts install/browbeat.yml' 
 	sshCommand remote: remote, command: 'cd /home/stack/browbeat/ansible && ansible-playbook -i hosts install/collectd.yml' 
     }
