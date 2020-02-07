@@ -18,15 +18,15 @@ node('perfci') {
 
     stage('setup jetpack') {
         echo 'setup jetpack'
-        /*sh 'rm -rf jetpack'
-        sh 'git clone https://github.com/redhat-performance/jetpack.git'
-        sh 'cp instackenv.json ~/.'
-        sh 'cp osp13_vars.yml jetpack/group_vars/all.yml'*/
+        //sh 'rm -rf jetpack'
+        //sh 'git clone https://github.com/redhat-performance/jetpack.git'
+        //sh 'cp instackenv.json jetpack/.'
+        //sh 'cp osp13_vars.yml jetpack/group_vars/all.yml'
     }
 
     stage('deploy osp using jetpack') {
 	echo 'deploy osp'
-	//sh 'cd jetpack && ansible-playbook -vvv main.yml 2>&1 | tee log'
+	//sh 'cd jetpack && ansible-playbook -vvv main.yml'
     }
 
     stage('setup browbeat') {
@@ -38,12 +38,14 @@ node('perfci') {
         sh 'echo "collectd_container: false" >> browbeat_vars.yml'
 	//sh "dns=`cat /etc/resolv.conf | grep nameserver | head -n1 | cut -d ' ' -f2` && echo 'dns_server: $dns' >> browbeat_vars.yml"
         //sh 'echo "dns_server: ${dns}" >> browbeat_vars.yml'
-    withCredentials([sshUserPrivateKey(credentialsId: 'privkey', keyFileVariable: 'keyfile', usernameVariable: 'username')]) {
-        remote.user = username
+    withCredentials([sshUserPrivateKey(credentialsId: 'root_perfci', keyFileVariable: 'keyfile', usernameVariable: 'username')]) {
+        remote.user = 'stack'
         remote.identityFile = keyfile
-        sshPut remote: remote, from: 'browbeat_vars.yml', into: '/home/stack/browbeat/ansible/install/group_vars/all.yml'
+        //sshPut remote: remote, from: 'browbeat_vars.yml', into: '/home/stack/browbeat/ansible/install/group_vars/all.yml'
 	sshCommand remote: remote, command: 'cd /home/stack/browbeat/ansible && ansible-playbook -i hosts install/browbeat.yml' 
 	sshCommand remote: remote, command: 'cd /home/stack/browbeat/ansible && ansible-playbook -i hosts install/collectd.yml' 
+        sshPut remote: remote, from: 'perfci-neutron.yaml', into: '/home/stack/browbeat/perfci-neutron.yaml'
+	sshCommand remote: remote, command: 'cd /home/stack/browbeat && source .browbeat-venv/bin/activate && python browbeat.py -s perfci-neutron.yaml rally' 
     }
     }
 }
