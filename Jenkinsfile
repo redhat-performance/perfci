@@ -1,7 +1,7 @@
 properties(
 	[parameters(
 		[string(defaultValue: 'norton.perf.lab.eng.rdu2.redhat.com', description: 'graphite host name', name: 'graphite_host'),
-		 string(defaultValue: 'perf-ci', description: 'graphite prefix name', name: 'graphite_prefix'),
+		 string(defaultValue: 'perfci-osp13-neutron-ovs', description: 'graphite prefix name', name: 'graphite_prefix'),
 		 string(defaultValue: 'norton.perf.lab.eng.rdu2.redhat.com', description: 'grafana_host name', name: 'grafana_host'),
 		 string(defaultValue: '10.11.5.19', description: 'dns server', name: 'dns_server'),
 		 text(defaultValue: '', description: 'Extra ansible vars', name: 'extra_vars')
@@ -18,15 +18,15 @@ node('perfci') {
 
     stage('setup jetpack') {
         echo 'setup jetpack'
-        sh 'rm -rf jetpack'
-        sh 'git clone https://github.com/redhat-performance/jetpack.git'
-        sh 'cp instackenv.json jetpack/.'
-        sh 'cp osp13_vars.yml jetpack/group_vars/all.yml'
+        //sh 'rm -rf jetpack'
+        //sh 'git clone https://github.com/redhat-performance/jetpack.git'
+        //sh 'cp instackenv.json jetpack/.'
+        //sh 'cp osp13_vars.yml jetpack/group_vars/all.yml'
     }
 
     stage('deploy osp using jetpack') {
 	echo 'deploy osp'
-	sh 'cd jetpack && ansible-playbook -vvv main.yml'
+	//sh 'cd jetpack && ansible-playbook -vvv main.yml'
     }
 
     stage('setup browbeat') {

@@ -1,6 +1,6 @@
 # Basic set of initial stress tests to test overcloud before running complete set of benchmarks.
 browbeat:
-  cloud_name: perfci
+  cloud_name: perfci-osp13-neutron-ovs
   rerun: 1
   # Two types of rerun:
   # iteration reruns on the iteration
@@ -13,7 +13,8 @@ ansible:
   ssh_config: ansible/ssh-config
 elasticsearch:
   enabled: true
-  host: elk-b09-h30-r720xd.rdu.openstack.engineering.redhat.com
+  # host: elk-b09-h30-r720xd.rdu.openstack.engineering.redhat.com
+  host: 10.9.76.205
   port: 9200
   regather: false
   metadata_files:
@@ -132,6 +133,28 @@ workloads:
       - name: create-list-network
         enabled: true
         file: rally/neutron/neutron-create-list-network-cc.yml
+        sla_max_seconds: 30
+        sla_max_failure: 0
+      - name: create-list-port
+        enabled: true
+        file: rally/neutron/neutron-create-list-port-cc.yml
+        sla_max_seconds: 30
+        sla_max_failure: 0
+      - name: create-list-router
+        enabled: true
+        file: rally/neutron/neutron-create-list-router-cc.yml
+        sla_max_seconds: 30
+        sla_max_failure: 0
+      - name: create-list-security-group
+        enabled: true
+        file: rally/neutron/neutron-create-list-security-group-cc.yml
+        sla_max_seconds: 30
+        sla_max_failure: 0
+      - name: create-list-subnet
+        enabled: true
+        file: rally/neutron/neutron-create-list-subnet-cc.yml
+        sla_max_seconds: 30
+        sla_max_failure: 0
 
   - name: nova
     enabled: false
