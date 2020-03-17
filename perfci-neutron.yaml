@@ -1,6 +1,7 @@
 # Basic set of initial stress tests to test overcloud before running complete set of benchmarks.
 browbeat:
-  cloud_name: perfci-osp13-neutron-ovs
+  cloud_name: cloudname
+  # cloud_name: perfci-osp13-neutron-ovs
   rerun: 1
   # Two types of rerun:
   # iteration reruns on the iteration
@@ -13,8 +14,7 @@ ansible:
   ssh_config: ansible/ssh-config
 elasticsearch:
   enabled: true
-  # host: elk-b09-h30-r720xd.rdu.openstack.engineering.redhat.com
-  host: 10.9.76.205
+  host: elk-b09-h30-r720xd.rdu.openstack.engineering.redhat.com
   port: 9200
   regather: false
   metadata_files:

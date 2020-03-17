@@ -47,6 +47,8 @@ node('perfci') {
         sshPut remote: remote, from: 'perfci-neutron.yaml', into: '/home/stack/browbeat/perfci-neutron.yaml'
 	sshCommand remote: remote, command: 'cd /home/stack/browbeat && source .browbeat-venv/bin/activate && python browbeat.py -s perfci-neutron.yaml rally' 
     }*/
-        sh 'ansible-playbook -vvv browbeat_task.yml'
+	sh 'sed -i "s/cloudname/${graphite_prefix}/g" perfci-neutron.yaml'
+        sh 'head -10 perfci-neutron.yaml'
+        //sh 'ansible-playbook -vvv browbeat_task.yml'
     }
 }
