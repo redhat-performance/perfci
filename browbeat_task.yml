@@ -9,9 +9,6 @@
   become: yes
   become_user: stack
   tasks:
-    - name: print host name
-      shell: hostname
-
     - name: copy the browbeat vars file
       copy:
         src: browbeat_vars.yml

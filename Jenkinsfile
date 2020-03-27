@@ -4,29 +4,25 @@ properties(
 		 string(defaultValue: 'perfci-osp13-neutron-ovs', description: 'graphite prefix name', name: 'graphite_prefix'),
 		 string(defaultValue: 'norton.perf.lab.eng.rdu2.redhat.com', description: 'grafana_host name', name: 'grafana_host'),
 		 string(defaultValue: '10.11.5.19', description: 'dns server', name: 'dns_server'),
+                 string(defaultValue: 'neutron-ovs, nova', description: 'List of DFGs to test', name: 'dfg_list'),
 		 text(defaultValue: '', description: 'Extra ansible vars', name: 'extra_vars')
 		])
 	])
-
-def remote = [:]
-remote.name = "undercloud"
-remote.host = "172.16.0.2"
-remote.allowAnyHosts = true
 
 node('perfci') {
     checkout scm
 
     stage('setup jetpack') {
         echo 'setup jetpack'
-        sh 'rm -rf jetpack'
-        sh 'git clone https://github.com/redhat-performance/jetpack.git'
-        sh 'cp instackenv.json jetpack/.'
-        sh 'cp osp13_vars.yml jetpack/group_vars/all.yml'
+        //sh 'rm -rf jetpack'
+        //sh 'git clone https://github.com/redhat-performance/jetpack.git'
+        //sh 'cp instackenv.json jetpack/.'
+        //sh 'cp osp13_vars.yml jetpack/group_vars/all.yml'
     }
 
     stage('deploy osp using jetpack') {
 	echo 'deploy osp'
-	sh 'cd jetpack && ansible-playbook -vvv main.yml'
+	//sh 'cd jetpack && ansible-playbook -vvv main.yml'
     }
 
     stage('setup browbeat') {
@@ -36,18 +32,14 @@ node('perfci') {
         sh 'echo "grafana_host: ${grafana_host}" >> browbeat_vars.yml'
         sh 'echo "dns_server: ${dns_server}" >> browbeat_vars.yml'
         sh 'echo "collectd_container: false" >> browbeat_vars.yml'
-	//sh "dns=`cat /etc/resolv.conf | grep nameserver | head -n1 | cut -d ' ' -f2` && echo 'dns_server: $dns' >> browbeat_vars.yml"
-        //sh 'echo "dns_server: ${dns}" >> browbeat_vars.yml'
-    /*withCredentials([sshUserPrivateKey(credentialsId: 'root_perfci', keyFileVariable: 'keyfile', usernameVariable: 'username')]) {
-        remote.user = 'stack'
-        remote.identityFile = keyfile
-        //sshPut remote: remote, from: 'browbeat_vars.yml', into: '/home/stack/browbeat/ansible/install/group_vars/all.yml'
-	sshCommand remote: remote, command: 'cd /home/stack/browbeat/ansible && ansible-playbook -i hosts install/browbeat.yml' 
-	sshCommand remote: remote, command: 'cd /home/stack/browbeat/ansible && ansible-playbook -i hosts install/collectd.yml' 
-        sshPut remote: remote, from: 'perfci-neutron.yaml', into: '/home/stack/browbeat/perfci-neutron.yaml'
-	sshCommand remote: remote, command: 'cd /home/stack/browbeat && source .browbeat-venv/bin/activate && python browbeat.py -s perfci-neutron.yaml rally' 
-    }*/
 	sh 'sed -i "s/cloudname/${graphite_prefix}/g" perfci-neutron.yaml'
         sh 'ansible-playbook -vvv browbeat_task.yml'
+    }
+
+    def dfgs = params.dfg_list.split(',')
+    for (int i = 0; i < dfgs.length; i++) {
+        stage("Run ${dfgs[i]} tests) {
+           echo "running ${dgfs[i]} ..."
+        }
     }
 }
