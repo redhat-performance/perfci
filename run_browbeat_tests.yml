@@ -1,0 +1,30 @@
+- hosts: localhost
+  tasks:
+    - name: add undercloud to inventry
+      add_host:
+        name: "undercloud"
+        ansible_host: "172.16.0.2"
+        
+- hosts: undercloud
+  become: yes
+  become_user: stack
+  tasks:
+    - name: copy the browbeat vars file
+      copy:
+        src: browbeat_vars.yml
+        dest: /home/stack/browbeat/ansible/install/group_vars/all.yml
+
+    - name: install collectd
+      shell: ansible-playbook -i hosts install/collectd.yml
+      args:
+        chdir: /home/stack/browbeat/ansible
+
+    - name: copy browbeat conf file
+      copy:
+        src: browbeat_config.yaml
+        dest: /home/stack/browbeat/bb_config.yaml
+
+    - name: run rally tests
+      shell: source .browbeat-venv/bin/activate && python browbeat.py -s bb_config.yaml rally
+      args:
+        chdir: /home/stack/browbeat
