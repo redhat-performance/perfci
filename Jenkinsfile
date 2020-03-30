@@ -33,13 +33,13 @@ node('perfci') {
         sh 'echo "dns_server: ${dns_server}" >> browbeat_vars.yml'
         sh 'echo "collectd_container: false" >> browbeat_vars.yml'
 	sh 'sed -i "s/cloudname/${graphite_prefix}/g" perfci-neutron.yaml'
-        sh 'ansible-playbook -vvv browbeat_task.yml'
+        //sh 'ansible-playbook -vvv browbeat_task.yml'
     }
 
     def dfgs = params.dfg_list.split(',')
     for (int i = 0; i < dfgs.length; i++) {
-        stage("Run ${dfgs[i]} tests) {
-           echo "running ${dgfs[i]} ..."
+        stage("Run ${dfgs[i]} tests") {
+           echo "running ${dfgs[i]} ..."
         }
     }
 }
