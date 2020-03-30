@@ -18,18 +18,3 @@
       shell: ansible-playbook -i hosts install/browbeat.yml
       args:
         chdir: /home/stack/browbeat/ansible
-
-    - name: install collectd
-      shell: ansible-playbook -i hosts install/collectd.yml
-      args:
-        chdir: /home/stack/browbeat/ansible
-
-    - name: copy neutrn conf file
-      copy:
-        src: perfci-neutron.yaml
-        dest: /home/stack/browbeat/perfci-neutron.yaml
-
-    - name: run neutron rally tests
-      shell: source .browbeat-venv/bin/activate && python browbeat.py -s perfci-neutron.yaml rally
-      args:
-        chdir: /home/stack/browbeat
