@@ -14,10 +14,10 @@
         src: browbeat_vars.yml
         dest: /home/stack/browbeat/ansible/install/group_vars/all.yml
 
-    - name: install collectd
-      shell: ansible-playbook -i hosts install/collectd.yml
-      args:
-        chdir: /home/stack/browbeat/ansible
+        # - name: install collectd
+        # shell: ansible-playbook -i hosts install/collectd.yml
+        # args:
+        # chdir: /home/stack/browbeat/ansible
 
     - name: copy browbeat conf file
       copy:

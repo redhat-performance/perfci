@@ -3,7 +3,7 @@ properties(
 		[string(defaultValue: 'norton.perf.lab.eng.rdu2.redhat.com', description: 'graphite host name', name: 'graphite_host'),
 		 string(defaultValue: 'norton.perf.lab.eng.rdu2.redhat.com', description: 'grafana host name', name: 'grafana_host'),
 		 string(defaultValue: '10.11.5.19', description: 'dns server', name: 'dns_server'),
-                 string(defaultValue: 'neutron', description: 'List of DFGs to test', name: 'dfg_list'),
+                 string(defaultValue: 'neutron, nova', description: 'List of DFGs to test', name: 'dfg_list'),
                  string(defaultValue: 'elk-b09-h30-r720xd.rdu.openstack.engineering.redhat.com', description: 'elasticsearch host', name: 'ES_host'),
 		 text(defaultValue: '', description: 'Extra ansible vars', name: 'extra_vars')
 		])
@@ -17,12 +17,13 @@ node('perfci') {
         sh 'rm -rf jetpack'
         sh 'git clone https://github.com/redhat-performance/jetpack.git'
         sh 'cp instackenv.json jetpack/.'
-        sh 'echo "neutron_backend: ovn" >> jetpack_all.yml'
+        sh 'echo "osp_release: 16" >> jetpack_all.yml'
+        sh """echo "vm_image_url: 'http://download.hosts.prod.upshift.rdu2.redhat.com/released/RHEL-8/8.1.0/BaseOS/x86_64/images/rhel-guest-image-8.1-263.x86_64.qcow2'" >> jetpack_all.yml"""
         sh 'cp jetpack_all.yml jetpack/group_vars/all.yml'
     }
 
     stage('deploy osp using jetpack') {
-	echo 'deploy osp13 with OVN'
+	echo 'deploy osp16 with OVN'
 	sh 'cd jetpack && ansible-playbook -vvv main.yml'
     }
 
@@ -32,7 +33,6 @@ node('perfci') {
         sh 'echo "graphite_host: ${graphite_host}" >> browbeat_vars.yml'
         sh 'echo "grafana_host: ${grafana_host}" >> browbeat_vars.yml'
         sh 'echo "dns_server: ${dns_server}" >> browbeat_vars.yml'
-        sh 'echo "collectd_container: false" >> browbeat_vars.yml'
         sh 'ansible-playbook -vvv browbeat_install.yml'
 
 	sh 'scp stack@172.16.0.2:/home/stack/browbeat/browbeat-config.yaml .'
@@ -47,16 +47,16 @@ node('perfci') {
         stage("Run ${dfg} tests") {
            if (dfg == 'neutron') {
                echo "neutron job"
-               sh """sed -i "s/cloud_name: openstack/cloud_name: perfci-osp13-${dfg}-ovn/" browbeat_config.yaml"""
+               sh """sed -i "s/cloud_name: openstack/cloud_name: perfci-osp16-${dfg}-ovn/" browbeat_config.yaml"""
 	       sh """sed -i "/- name: ${dfg}/{n;s/: false/: true/}" browbeat_config.yaml"""
 
-               sh """echo "graphite_prefix: perfci-osp13-${dfg}-ovn" >> browbeat_vars.yml"""
+               sh """echo "graphite_prefix: perfci-osp16-${dfg}-ovn" >> browbeat_vars.yml"""
            } else {
                echo "running ${dfg} ..."
-               sh """sed -i "s/cloud_name: openstack/cloud_name: perfci-osp13-${dfg}/" browbeat_config.yaml"""
+               sh """sed -i "s/cloud_name: openstack/cloud_name: perfci-osp16-${dfg}/" browbeat_config.yaml"""
 	       sh """sed -i "/- name: ${dfg}/{n;s/: false/: true/}" browbeat_config.yaml"""
 
-               sh """echo "graphite_prefix: perfci-osp13-${dfg}" >> browbeat_vars.yml"""
+               sh """echo "graphite_prefix: perfci-osp16-${dfg}" >> browbeat_vars.yml"""
            }
            sh 'ansible-playbook -vvv run_browbeat_tests.yml'
         }
