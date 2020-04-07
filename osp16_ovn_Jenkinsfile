@@ -23,7 +23,7 @@ node('perfci') {
     }
 
     stage('deploy osp using jetpack') {
-	echo 'deploy osp16 with OVN'
+	echo 'deploy OSP16 with OVN'
 	//sh 'cd jetpack && ansible-playbook -vvv main.yml'
     }
 
