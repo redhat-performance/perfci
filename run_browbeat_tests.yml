@@ -1,9 +1,20 @@
 - hosts: localhost
   tasks:
+    - name: detect python version
+      shell: |
+        ssh -o 'PreferredAuthentications=publickey' -o 'StrictHostKeyChecking=no' -o 'UserKnownHostsFile /dev/null' stack@172.16.0.2 /usr/bin/python --version
+      register: python_version
+      ignore_errors: true
+
+    - name: python interpreter
+      set_fact:
+        python_interpreter: "{{ (python_version.stderr_lines|length > 0 and 'Python' in python_version.stderr) | ternary('/usr/bin/python', '/usr/libexec/platform-python') }}"
+
     - name: add undercloud to inventry
       add_host:
         name: "undercloud"
         ansible_host: "172.16.0.2"
+        ansible_python_interpreter: "{{ python_interpreter }}"
         
 - hosts: undercloud
   become: yes
