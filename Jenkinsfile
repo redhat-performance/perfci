@@ -23,9 +23,10 @@ node('perfci') {
     stage('deploy osp using jetpack') {
 	echo 'deploy osp'
 	//sh 'cd jetpack && ansible-playbook -vvv main.yml'
+	sh 'echo "boo: ${Boo}"'
     }
 
-    stage('setup browbeat') {
+    /*stage('setup browbeat') {
 	echo 'setup browbeat'
 	sh 'scp stack@172.16.0.2:/home/stack/browbeat/ansible/install/group_vars/all.yml browbeat_vars.yml'
         sh 'echo "graphite_host: ${graphite_host}" >> browbeat_vars.yml'
@@ -59,5 +60,5 @@ node('perfci') {
            }
            sh 'ansible-playbook -vvv run_browbeat_tests.yml'
         }
-    }
+    }*/
 }

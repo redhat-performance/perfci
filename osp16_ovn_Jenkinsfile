@@ -14,17 +14,17 @@ node('perfci') {
 
     stage('setup jetpack') {
         echo 'setup jetpack'
-        //sh 'rm -rf jetpack'
-        //sh 'git clone https://github.com/redhat-performance/jetpack.git'
-        //sh 'cp instackenv.json jetpack/.'
-        //sh 'echo "osp_release: 16" >> jetpack_all.yml'
-        //sh """echo "vm_image_url: 'http://download.hosts.prod.upshift.rdu2.redhat.com/released/RHEL-8/8.1.0/BaseOS/x86_64/images/rhel-guest-image-8.1-263.x86_64.qcow2'" >> jetpack_all.yml"""
-        //sh 'cp jetpack_all.yml jetpack/group_vars/all.yml'
+        sh 'rm -rf jetpack'
+        sh 'git clone https://github.com/redhat-performance/jetpack.git'
+        sh 'cp instackenv.json jetpack/.'
+        sh 'echo "osp_release: 16" >> jetpack_all.yml'
+        sh """echo "vm_image_url: 'http://download.hosts.prod.upshift.rdu2.redhat.com/released/RHEL-8/8.1.0/BaseOS/x86_64/images/rhel-guest-image-8.1-263.x86_64.qcow2'" >> jetpack_all.yml"""
+        sh 'cp jetpack_all.yml jetpack/group_vars/all.yml'
     }
 
     stage('deploy osp using jetpack') {
 	echo 'deploy OSP16 with OVN'
-	//sh 'cd jetpack && ansible-playbook -vvv main.yml'
+	sh 'cd jetpack && ansible-playbook -vvv main.yml'
     }
 
     stage('setup browbeat') {
