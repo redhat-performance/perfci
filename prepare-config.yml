@@ -1,0 +1,8 @@
+- hosts: 127.0.0.1
+  vars_files:
+    - browbeat-config-vars.yml
+  tasks:
+    - name: Creating my.cnf with respected resources
+      template:
+        src: browbeat-config.yaml.j2
+        dest: browbeat-config.yaml

@@ -24,6 +24,11 @@ node('perfci') {
 	echo 'deploy osp'
 	//sh 'cd jetpack && ansible-playbook -vvv main.yml'
 	sh 'echo "boo: ${Boo}"'
+        //sh 'echo "ES_host: ${ES_host}" >> browbeat-config-vars.yml'
+        sh 'chmod +x create-vars.sh' 
+        sh './create-vars.sh'
+        sh 'ansible-playbook -vvv prepare-config.yml'
+        sh 'echo "ES_host: ${ES_host}"'
     }
 
     /*stage('setup browbeat') {
