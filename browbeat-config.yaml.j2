@@ -13,7 +13,7 @@ ansible:
   logging_playbook: ansible/common_logging/browbeat_logging.yml
   ssh_config: ansible/ssh-config
 elasticsearch:
-  enabled: false
+  enabled: true
   host: {{ ES_host }} 
   port: 9200
   regather: false
@@ -148,8 +148,8 @@ workloads:
     type: rally
     rally_deployment: overcloud
     concurrency:
-      - 2
-    times: 10
+      - {{ neutron_concurrency }}
+    times: {{ neutron_times }}
     scenarios:
       - name: create-list-network
         enabled: true

@@ -5,6 +5,8 @@ properties(
 		 string(defaultValue: '10.11.5.19', description: 'dns server', name: 'dns_server'),
                  string(defaultValue: 'neutron, nova', description: 'List of DFGs to test', name: 'dfg_list'),
                  string(defaultValue: 'elk-b09-h30-r720xd.rdu.openstack.engineering.redhat.com', description: 'elasticsearch host', name: 'ES_host'),
+                 string(defaultValue: '16', description: 'neutron concurrency', name: 'neutron_concurrency'),
+                 string(defaultValue: '500', description: 'neutron times', name: 'neutron_times'),
 		 text(defaultValue: '', description: 'Extra ansible vars', name: 'extra_vars')
 		])
 	])
@@ -14,24 +16,18 @@ node('perfci') {
 
     stage('setup jetpack') {
         echo 'setup jetpack'
-        //sh 'rm -rf jetpack'
-        //sh 'git clone https://github.com/redhat-performance/jetpack.git'
-        //sh 'cp instackenv.json jetpack/.'
-        //sh 'cp jetpack_all.yml jetpack/group_vars/all.yml'
+        sh 'rm -rf jetpack'
+        sh 'git clone https://github.com/redhat-performance/jetpack.git'
+        sh 'cp instackenv.json jetpack/.'
+        sh 'cp jetpack_all.yml jetpack/group_vars/all.yml'
     }
 
     stage('deploy osp using jetpack') {
 	echo 'deploy osp'
-	//sh 'cd jetpack && ansible-playbook -vvv main.yml'
-	sh 'echo "boo: ${Boo}"'
-        //sh 'echo "ES_host: ${ES_host}" >> browbeat-config-vars.yml'
-        sh 'chmod +x create-vars.sh' 
-        sh './create-vars.sh'
-        sh 'ansible-playbook -vvv prepare-config.yml'
-        sh 'echo "ES_host: ${ES_host}"'
+	sh 'cd jetpack && ansible-playbook -vvv main.yml'
     }
 
-    /*stage('setup browbeat') {
+    stage('setup browbeat') {
 	echo 'setup browbeat'
 	sh 'scp stack@172.16.0.2:/home/stack/browbeat/ansible/install/group_vars/all.yml browbeat_vars.yml'
         sh 'echo "graphite_host: ${graphite_host}" >> browbeat_vars.yml'
@@ -40,9 +36,9 @@ node('perfci') {
         sh 'echo "collectd_container: false" >> browbeat_vars.yml'
         sh 'ansible-playbook -vvv browbeat_install.yml'
 
-	sh 'scp stack@172.16.0.2:/home/stack/browbeat/browbeat-config.yaml .'
-        sh 'sed -i "/elasticsearch/{n;s/: false/: true/}" browbeat-config.yaml'
-        sh 'sed -i "s/host: 1.1.1.1/host: ${ES_host}/" browbeat-config.yaml'
+        sh 'chmod +x create-vars.sh'
+        sh './create-vars.sh'
+        sh 'ansible-playbook prepare-config.yml'
     }
 
     def dfgs = params.dfg_list.split(',')
@@ -65,5 +61,5 @@ node('perfci') {
            }
            sh 'ansible-playbook -vvv run_browbeat_tests.yml'
         }
-    }*/
+    }
 }
