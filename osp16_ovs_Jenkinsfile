@@ -3,8 +3,10 @@ properties(
 		[string(defaultValue: 'norton.perf.lab.eng.rdu2.redhat.com', description: 'graphite host name', name: 'graphite_host'),
 		 string(defaultValue: 'norton.perf.lab.eng.rdu2.redhat.com', description: 'grafana host name', name: 'grafana_host'),
 		 string(defaultValue: '10.11.5.19', description: 'dns server', name: 'dns_server'),
-                 string(defaultValue: 'neutron, nova', description: 'List of DFGs to test', name: 'dfg_list'),
+                 string(defaultValue: 'neutron', description: 'List of DFGs to test', name: 'dfg_list'),
                  string(defaultValue: 'elk-b09-h30-r720xd.rdu.openstack.engineering.redhat.com', description: 'elasticsearch host', name: 'ES_host'),
+                 string(defaultValue: '16', description: 'neutron concurrency', name: 'neutron_concurrency'),
+                 string(defaultValue: '500', description: 'neutron times', name: 'neutron_times'),
 		 text(defaultValue: '', description: 'Extra ansible vars', name: 'extra_vars')
 		])
 	])
@@ -36,9 +38,9 @@ node('perfci') {
         sh 'echo "dns_server: ${dns_server}" >> browbeat_vars.yml'
         sh 'ansible-playbook -vvv browbeat_install.yml'
 
-	sh 'scp stack@172.16.0.2:/home/stack/browbeat/browbeat-config.yaml .'
-        sh 'sed -i "/elasticsearch/{n;s/: false/: true/}" browbeat-config.yaml'
-        sh 'sed -i "s/host: 1.1.1.1/host: ${ES_host}/" browbeat-config.yaml'
+        sh 'chmod +x create-vars.sh'
+        sh './create-vars.sh'
+        sh 'ansible-playbook prepare-config.yml'
     }
 
     def dfgs = params.dfg_list.split(',')
