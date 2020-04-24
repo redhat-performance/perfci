@@ -150,44 +150,58 @@ workloads:
     concurrency:
       - {{ neutron_concurrency }}
     times: {{ neutron_times }}
+    floating_network: public
+    flavor_name: "m1.tiny"
     scenarios:
       - name: create-list-network
         enabled: true
         file: rally/neutron/neutron-create-list-network-cc.yml
+        sla_avg_list_networks: {{ neutron_cre_list_nw_sla_avg_list_networks }}
       - name: create-list-port
         enabled: true
         file: rally/neutron/neutron-create-list-port-cc.yml
+        network_create_args: {{ neutron_create_list_port_network_create_args }}
+        port_create_args: {{ neutron_create_list_port_port_create_args }}
+        ports_per_network: {{ neutron_create_list_port_ports_per_network }}
+        sla_avg_list_ports: {{ neutron_create_list_port_sla_avg_list_ports }}
+        sla_max_failure: {{ neutron_create_list_port_sla_max_failure }}
       - name: create-list-router
         enabled: true
         file: rally/neutron/neutron-create-list-router-cc.yml
+        network_create_args: {{ neutron_cre_list_router_network_create_args }}
+        subnet_create_args: {{ neutron_cre_list_router_subnet_create_args }}
+        subnet_cidr_start: {{ neutron_create_list_router_subnet_cidr_start }}
+        subnets_per_network: {{ neutron_create_list_router_subnets_per_network }}
+        router_create_args: {{ neutron_create_list_router_router_create_args }}
       - name: create-list-security-group
         enabled: true
         file: rally/neutron/neutron-create-list-security-group-cc.yml
       - name: create-list-subnet
         enabled: true
         file: rally/neutron/neutron-create-list-subnet-cc.yml
+        subnets_per_network: {{ neutron_cre_list_subnet_subnets_per_network }}
       - name: create-list-trunks
         enabled: true
-        subport_count: 10
+        subport_count: {{ neutron_create_list_trunks_subport_count }}
         file: rally/neutron/neutron-create-list-trunks.yml
       - name: boot-server-with-subports
         enabled: true
-        flavor_name: m1.small
-        image_name: centos7
-        subport_count: 10
+        flavor_name: {{ neutron_boot_server_with_subports_flavor_name }}
+        image_name: {{ neutron_boot_server_with_subports_image_name }}
+        subport_count: {{ neutron_boot_server_with_subports_subport_count }}
         file: rally/neutron/neutron-boot-server-with-subports.yml
       - name: boot-server-and-add-subports
         enabled: true
-        flavor_name: m1.small
-        image_name: centos7
-        subport_count: 10
+        flavor_name: {{ neutron_boot_server_and_add_subports_flavor_name }}
+        image_name: {{ neutron_boot_server_and_add_subports_image_name }}
+        subport_count: {{ neutron_boot_server_and_add_subports_subport_count }}
         file: rally/neutron/neutron-boot-server-and-add-subports.yml
       - name: boot-server-and-batch-add-subports
         enabled: true
-        flavor_name: m1.small
-        image_name: centos7
-        subports_per_batch: 10
-        batches: 5
+        flavor_name: {{ neutron_boot_server_and_batch_add_subports_flavor_name }}
+        image_name: {{ neutron_boot_server_and_batch_add_subports_image_name }}
+        subports_per_batch: {{ neutron_boot_server_and_batch_add_subports_subports_per_batch }}
+        batches: {{ neutron_boot_server_and_batch_add_subports_batches }}
         file: rally/neutron/neutron-boot-server-and-batch-add-subports.yml
 
   - name: nova
