@@ -32,7 +32,7 @@
 
     - name: copy browbeat conf file
       copy:
-        src: browbeat_config.yaml
+        src: browbeat-config.yaml
         dest: /home/stack/browbeat/bb_config.yaml
 
     - name: run rally tests

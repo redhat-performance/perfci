@@ -1,8 +1,9 @@
 - hosts: 127.0.0.1
   vars_files:
+    - browbeat-workload-vars.yml
     - browbeat-config-vars.yml
   tasks:
-    - name: Creating my.cnf with respected resources
+    - name: Creating config with respected dfg
       template:
-        src: browbeat-config.yaml.j2
+        src: browbeat-config-template.yaml.j2
         dest: browbeat-config.yaml

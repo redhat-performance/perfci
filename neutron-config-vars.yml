@@ -1,0 +1,14 @@
+dfg_rally_name: neutron
+enabled: true
+type: rally
+rally_deployment: overcloud
+concurrency: [2, 5]
+times: 10
+scenarios:
+ - name: create-list-network
+   enabled: true
+   file: rally/neutron/neutron-create-list-network-cc.yml
+   params:
+    sla_avg_list_networks: 15
+    concurrency: [15]
+    times: 500
