@@ -5,11 +5,11 @@ properties(
 		 string(defaultValue: '10.11.5.19', description: 'dns server', name: 'dns_server'),
                  string(defaultValue: 'neutron', description: 'List of DFGs to test', name: 'dfg_list'),
                  string(defaultValue: 'elk-b09-h30-r720xd.rdu.openstack.engineering.redhat.com', description: 'elasticsearch host', name: 'ES_host'),
-                 string(defaultValue: '16', description: 'neutron concurrency', name: 'neutron_concurrency'),
-                 string(defaultValue: '500', description: 'neutron times', name: 'neutron_times'),
 		 text(defaultValue: '', description: 'Extra ansible vars', name: 'extra_vars')
 		])
 	])
+// workaround for first build
+params.each { k, v -> env[k] = v }
 
 node('perfci') {
     checkout scm
@@ -39,27 +39,16 @@ node('perfci') {
 
         sh 'chmod +x create-vars.sh'
         sh './create-vars.sh'
-        sh 'ansible-playbook prepare-config.yml'
     }
 
     def dfgs = params.dfg_list.split(',')
     for (int i = 0; i < dfgs.length; i++) {
-        sh 'cp browbeat-config.yaml browbeat_config.yaml'
         String dfg = dfgs[i].trim()
         stage("Run ${dfg} tests") {
-           if (dfg == 'neutron') {
-               echo "neutron job"
-               sh """sed -i "s/cloud_name: openstack/cloud_name: perfci-osp13-${dfg}-ovn/" browbeat_config.yaml"""
-	       sh """sed -i "/- name: ${dfg}/{n;s/: false/: true/}" browbeat_config.yaml"""
-
-               sh """echo "graphite_prefix: perfci-osp13-${dfg}-ovn" >> browbeat_vars.yml"""
-           } else {
-               echo "running ${dfg} ..."
-               sh """sed -i "s/cloud_name: openstack/cloud_name: perfci-osp13-${dfg}/" browbeat_config.yaml"""
-	       sh """sed -i "/- name: ${dfg}/{n;s/: false/: true/}" browbeat_config.yaml"""
-
-               sh """echo "graphite_prefix: perfci-osp13-${dfg}" >> browbeat_vars.yml"""
-           }
+           sh """cp ${dfg}-config-vars.yml browbeat-workload-vars.yml"""
+           sh """ansible-playbook prepare-config.yml"""
+           sh """sed -i "s/cloud_name: openstack/cloud_name: perfci-osp13-ovn-${dfg}/" browbeat-config.yaml"""
+           sh """echo "graphite_prefix: perfci-osp13-ovn-${dfg}" >> browbeat_vars.yml"""
            sh 'ansible-playbook -vvv run_browbeat_tests.yml'
         }
     }
