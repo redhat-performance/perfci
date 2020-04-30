@@ -4,7 +4,7 @@ properties(
 		 string(defaultValue: 'norton.perf.lab.eng.rdu2.redhat.com', description: 'grafana host name', name: 'grafana_host'),
 		 string(defaultValue: '10.11.5.19', description: 'dns server', name: 'dns_server'),
                  string(defaultValue: 'neutron', description: 'List of DFGs to test', name: 'dfg_list'),
-                 string(defaultValue: 'elk-b09-h30-r720xd.rdu.openstack.engineering.redhat.com', description: 'elasticsearch host', name: 'ES_host'),
+                 string(defaultValue: '10.9.76.205', description: 'elasticsearch host', name: 'ES_host'),
 		 text(defaultValue: '', description: 'Extra ansible vars', name: 'extra_vars')
 		])
 	])
