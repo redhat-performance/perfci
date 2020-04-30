@@ -69,7 +69,7 @@ workloads:
       - name: {{s.name}}
         enabled: {{s.enabled}}
         file: {{s.file}}
-        {% if s.params %}
+        {% if s.params is defined %}
         {% for k, v in s.params.items() %}
         {% if v is iterable %}
         {{k}}:
