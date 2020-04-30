@@ -71,7 +71,7 @@ workloads:
         file: {{s.file}}
         {% if s.params is defined %}
         {% for k, v in s.params.items() %}
-        {% if v is iterable %}
+        {% if k == "concurrency" %}
         {{k}}:
           {% for i in v %}
           - {{ i }}
