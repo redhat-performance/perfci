@@ -39,6 +39,26 @@
             "pm_password": "calvin",
             "pm_type": "pxe_ipmitool",
             "pm_user": "root"
+	},
+        {
+            "arch": "x86_64",
+            "cpu": "2",
+            "disk": "20",
+            "memory": "1024",
+            "pm_addr": "ospperf6-drac.mgmt.mobius.lab.eng.rdu2.redhat.com",
+            "pm_password": "calvin",
+            "pm_type": "pxe_ipmitool",
+            "pm_user": "root"
+        },
+        {
+            "arch": "x86_64",
+            "cpu": "2",
+            "disk": "20",
+            "memory": "1024",
+            "pm_addr": "ospperf7-drac.mgmt.mobius.lab.eng.rdu2.redhat.com",
+            "pm_password": "calvin",
+            "pm_type": "pxe_ipmitool",
+            "pm_user": "root"
         }
     ]
 }
